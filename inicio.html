@@ -1,20 +1,91 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ecossistema Simples</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ecossistema - Versão Final</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="menu-lateral">
-    <h3>Menu de Controle</h3>
-    <button id="create-species-btn">Criar Espécie</button>
-    <button id="spawn-creature-btn">Spawnar Criatura</button>
-    <button id="clear-map-btn">Limpar Criaturas</button>
-  </div>
-  <div id="map-container"></div>
 
-  <script src="main.js"></script>
+  <!-- botao toggle para mobile -->
+  <button id="toggle-menu" aria-label="Abrir/fechar menu">☰</button>
+
+  <aside id="menu-lateral" aria-label="Painel de controle">
+    <h2>Ecossistema</h2>
+    <div class="controls">
+      <button id="create-species-btn">Criar espécie</button>
+      <button id="spawn-random-btn">Spawnar aleatório</button>
+      <button id="clear-creatures-btn">Limpar criaturas</button>
+
+      <div class="zoom-controls">
+        <label for="zoom-range">Zoom</label>
+        <input id="zoom-range" type="range" min="0.4" max="2.5" step="0.05" value="0.4">
+      </div>
+    </div>
+
+    <h3>Espécies</h3>
+    <div id="species-list" class="species-list"></div>
+
+    <div class="info" id="side-info"></div>
+  </aside>
+
+  <main id="main-area">
+    <div id="map-wrap">
+      <div id="map-container" tabindex="0" aria-label="Mapa do ecossistema"></div>
+    </div>
+  </main>
+
+  <!-- Modal de criação de espécie -->
+  <div id="species-modal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <h3>Criar Nova Espécie</h3>
+
+      <label>Nome</label>
+      <input type="text" id="sp-name" placeholder="Nome da espécie">
+
+      <label>Dieta</label>
+      <select id="sp-diet">
+        <option value="herbivoro">Herbívoro</option>
+        <option value="carnivoro">Carnívoro</option>
+      </select>
+
+      <label>Cor</label>
+      <input type="color" id="sp-color" value="#ff6b00">
+
+      <label>Tamanho</label>
+      <select id="sp-size">
+        <option value="pequeno">Pequeno</option>
+        <option value="medio" selected>Médio</option>
+        <option value="grande">Grande</option>
+      </select>
+
+      <label>Velocidade (px/s)</label>
+      <input type="range" id="sp-speed" min="10" max="140" value="45">
+
+      <label>Visão (px)</label>
+      <input type="range" id="sp-vision" min="40" max="240" value="80">
+
+      <div class="modal-actions">
+        <button id="sp-cancel">Cancelar</button>
+        <button class="primary" id="sp-create">Criar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const WORLD = {
+    creatures: [],
+    plants: [],
+    carcasses: [],
+    lakes: [],
+    speciesCatalog: []
+  };
+</script>
+
+<script src="map.js"></script>
+<script src="species.js"></script>
+<script src="ui.js"></script>
+
 </body>
 </html>

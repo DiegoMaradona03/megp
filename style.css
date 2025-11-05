@@ -1,54 +1,129 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  display: flex;
+:root{
+  --sidebar-w: 280px;
+  --bg: #e9f2ea;
+  --panel: rgba(20,20,20,0.95);
 }
 
-#menu-lateral {
-  width: 200px;
-  background-color: #333;
-  color: white;
-  padding: 10px;
-  box-sizing: border-box;
-  position: fixed;
-  height: 100vh;
-  overflow-y: auto;
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,Arial, sans-serif;background:var(--bg);color:#222}
+
+body{
+  display:flex;
+  gap:16px;
+  align-items:stretch;
+  overflow:hidden;
 }
 
-#menu-lateral button {
-  width: 100%;
-  margin: 5px 0;
-  padding: 5px;
-  cursor: pointer;
+/* TOGGLE MENU BUTTON */
+#toggle-menu{
+  position:fixed;
+  top:14px; left:14px;
+  background:#1d6f3f;
+  border:0;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  z-index:5000;
+  display:none;
 }
 
-#map-container {
-  margin-left: 200px;
-  display: grid;
-  grid-template-columns: repeat(50, 20px);
-  grid-template-rows: repeat(50, 20px);
-  border: 2px solid black;
-  overflow: auto;
-  width: calc(100vw - 200px);
-  height: 100vh;
-  background-color: #222;
-  position: relative;
-  transform-origin: 0 0;
+/* SIDE MENU */
+#menu-lateral{
+  width:var(--sidebar-w);
+  background:var(--panel);
+  color:#fff;
+  padding:14px;
+  border-radius:10px;
+  margin:18px;
+  flex:0 0 var(--sidebar-w);
+  z-index:30;
+  position:relative;
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  transition: transform .25s ease;
+}
+#menu-lateral.hide{
+  transform: translateX(-120%);
 }
 
-.tile {
-  width: 20px;
-  height: 20px;
+#menu-lateral h2{margin:0 0 8px 0;font-size:18px}
+#menu-lateral .controls{display:flex;flex-direction:column;gap:8px}
+#menu-lateral button{padding:8px;border-radius:8px;border:0;background:#2d7a3b;color:#fff;cursor:pointer}
+#menu-lateral button:hover{filter:brightness(1.05)}
+.zoom-controls{margin-top:8px}
+.zoom-controls label{display:block;color:#ddd;font-size:13px;margin-bottom:6px}
+#menu-lateral input[type="range"]{width:100%}
+.species-list{margin-top:8px;display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow:auto;padding-right:6px}
+.species-item{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);padding:8px;border-radius:8px}
+.species-item .left{display:flex;gap:8px;align-items:center}
+.species-item .dot{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,0.35)}
+.species-item button{padding:6px;border-radius:6px;border:0;background:#ffb547;color:#111;cursor:pointer}
+
+/* MAP */
+#main-area{flex:1;display:flex;flex-direction:column;margin:18px 18px 18px 0}
+#map-wrap{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  border-radius:12px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.15);
+  background:linear-gradient(180deg,#dff1df, #d0e8d0)
+}
+#map-container{
+  position:absolute;
+  background: linear-gradient(#76c06d, #5aa455);
+  border-radius:10px;
+  width:4000px;
+  height:3200px;
+  transform-origin:center center;
+  will-change: transform;
 }
 
-.tile.grass { background-color: #7cfc00; }
-.tile.earth { background-color: #a0522d; }
-.tile.water { background-color: #1e90ff; }
+/* lake classes injected by JS - small styling fallback */
+.lake-deep{pointer-events:none}
+.lake-shallow{pointer-events:none;mix-blend-mode:multiply}
 
-.creature {
-  width: 16px;
-  height: 16px;
+/* Entities */
+.creature{
+  position:absolute;
+  pointer-events:none;
+  transition: transform 0.08s linear;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+  border:1px solid rgba(0,0,0,0.35);
+  border-radius:50%;
+}
+.plant{position:absolute;width:8px;height:8px;border-radius:50%;background:#1f7a21}
+.carcass{position:absolute;border-radius:4px;background:#6b4a2a;box-shadow: inset 0 0 6px rgba(0,0,0,0.3)}
+
+.modal{display:none;position:fixed;left:0;top:0;right:0;bottom:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:1000}
+.modal-card{background:#fff;padding:18px;border-radius:12px;width:520px;max-width:94vw}
+.modal-card input[type="text"], .modal-card select, .modal-card input[type="color"], .modal-card input[type="range"]{
+  width:100%;padding:8px;margin:6px 0 10px 0;border-radius:8px;border:1px solid #ddd;
+}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.modal-actions .primary{background:#1976d2;color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+.modal-actions button{padding:8px;border-radius:8px;cursor:pointer}
+
+/* hint small on bottom-left */
+#map-wrap:after{
+  content: "Arraste o mapa para mover • Duplo clique para spawn rápido";
   position: absolute;
-  border-radius: 50%;
-  border: 1px solid black;
+  left: 18px; bottom: 18px;
+  background: rgba(255,255,255,0.06);
+  color: #111; padding:8px 10px; border-radius:8px; font-size:13px;
+  backdrop-filter: blur(4px);
+}
+
+/* MOBILE */
+@media (max-width:900px){
+  #toggle-menu{display:block;}
+  #menu-lateral{
+    position:fixed;
+    top:0;left:0;height:100vh;
+    margin:0;
+    border-radius:0;
+  }
+  #map-container{width:3200px;height:2600px}
 }
